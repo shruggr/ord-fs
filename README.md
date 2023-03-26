@@ -36,6 +36,6 @@ Directories are inscribed with a content-type of `ord-fs/json`
 ### Download a Directory
 `node dist/ord-fs.js download <origin> <dest path>`
 
-### Sync a Directory
+### Sync changes between directory and ordinals
 *Coming Soon*
 
