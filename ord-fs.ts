@@ -29,13 +29,17 @@ const filesPriv = PrivKey.fromWif(FILES_WIF || '');
 // const filesKp = KeyPair.fromPrivKey(filesPriv);
 const filesAdd = Address.fromPrivKey(filesPriv);
 
+console.log('FUNDS', fundsAdd.toString());
+console.log('FILES', filesAdd.toString());
+// process.exit();
 let utxos: any[] = [];
 
-const {TAAL} = process.env;
-const arc = 'https://api.taal.com/arc'
+// const {TAAL} = process.env;
+const arc = 'https://arc.gorillapool.io';
+// const arc = 'https://api.taal.com/arc'
 const arcClient = new ArcClient(arc, {
-  apiKey: TAAL,
-  bearer: TAAL,
+//   apiKey: TAAL,
+//   bearer: TAAL,
 });
 
 async function main() {
@@ -46,7 +50,7 @@ async function main() {
         case 'upload':
             await loadUtxos();
             const fse = await inscribeDir(argv._[1]);
-            console.log('ORIGIN:', fse.origin);
+            console.log('ORIGIN:', fse.origin.toString());
             break
         default:
             console.error("Unknown command", argv._[0]);
@@ -101,7 +105,6 @@ async function loadUtxos() {
 }
 
 async function inscribeDir(path: string): Promise<FSEntry> {
-    console.log('inscribing dir', path)
     const dir = await fs.opendir(path);
     const fsDir = new FSDir();
     fsDir.name = fsPath.basename(path);
@@ -112,7 +115,7 @@ async function inscribeDir(path: string): Promise<FSEntry> {
         } else {
             fse = await inscribeFile(path, dirent.name);
         }
-        fsDir.entries[dirent.name] = fse.origin.toString();
+        fsDir.entries[dirent.name] = `ord://${fse.origin.toString()}`;
     }
 
     const tx = new Tx();
@@ -122,6 +125,7 @@ async function inscribeDir(path: string): Promise<FSEntry> {
         "ord-fs/json"
     )
     tx.addTxOut(new Bn(1), script);
+    console.log('inscribing dir', path)
     await fundAndBroadcast(tx);
 
     const txid = tx.hash().reverse();
@@ -135,7 +139,6 @@ async function inscribeDir(path: string): Promise<FSEntry> {
 }
 
 async function inscribeFile(path: string, name: string) {
-    console.log('inscribing file', path, name)
     const type = mime.lookup(name) || 'application/octet-stream';
     const body = await fs.readFile(fsPath.join(path, name));
     
@@ -146,6 +149,7 @@ async function inscribeFile(path: string, name: string) {
         type
     );
     tx.addTxOut(new Bn(1), script);
+    console.log('inscribing file', path, name)
     await fundAndBroadcast(tx);
 
     const txid = tx.hash().reverse();
@@ -231,9 +235,8 @@ async function fundAndBroadcast(tx: Tx) {
 
     const eftx = StandardToExtended(tx.toBuffer(), parents);
     const txid = tx.id()
-    // const result = 
-    await arcClient.postTransaction(eftx as Buffer);
-    // console.log('broadcasted', txid, result);
+    const result = await arcClient.postTransaction(eftx as Buffer);
+    console.log('broadcasted', txid, result);
     // console.log('broadcasted', txid, tx.toHex());
 
     for (let [vout, txout] of tx.txOuts.entries()) {
