@@ -58,15 +58,18 @@ async function main() {
 }
 
 async function download(origin: string, dest: string) {
+    if(origin.startsWith('ord://')) {
+        origin = origin.slice(6);
+    }
     let resp = await fetch(`https://ordinals.gorillapool.io/api/inscriptions/origin/${origin}`);
     if(!resp.ok) {
-        throw new Error(`Failed to fetch inscriptio: ${origin} ${resp.status} ${resp.statusText}`);
+        throw new Error(`Failed to fetch inscription: ${origin} ${resp.status} ${resp.statusText}`);
     }
     let [inscription] = await resp.json();
     // console.log('inscription', inscription);
     resp = await fetch(`https://ordinals.gorillapool.io/api/files/inscriptions/${origin}`);
     if(!resp.ok) {
-        throw new Error(`Failed to fetch inscriptio: ${origin} ${resp.status} ${resp.statusText}`);
+        throw new Error(`Failed to fetch inscription: ${origin} ${resp.status} ${resp.statusText}`);
     }
 
     if(inscription.file.type == 'ord-fs/json') {
