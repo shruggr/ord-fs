@@ -7,7 +7,7 @@ import * as mime from 'mime-types';
 import * as fsPath from 'path';
 import { StandardToExtended } from './bitcoin-ef/standard-to-extended';
 import { ArcClient } from './js-arc-client';
-import { FSDir, FSEntry, Origin } from './models';
+import { FSDir, FSEntry, Outpoint } from './models';
 
 dotenv.config();
 
@@ -133,7 +133,7 @@ async function inscribeDir(path: string): Promise<FSEntry> {
 
     const txid = tx.hash().reverse();
     const fse = new FSEntry();
-    fse.origin = Origin.fromOutpoint(txid, 0);
+    fse.origin = Outpoint.fromOutpoint(txid, 0);
     fse.name = fsDir.name;
     fse.data = Buffer.from(JSON.stringify(fsDir));
 
@@ -157,7 +157,7 @@ async function inscribeFile(path: string, name: string) {
 
     const txid = tx.hash().reverse();
     const fse = new FSEntry();
-    fse.origin = Origin.fromOutpoint(txid, 0);
+    fse.origin = Outpoint.fromOutpoint(txid, 0);
     fse.name = name;
     fse.data = body;
 

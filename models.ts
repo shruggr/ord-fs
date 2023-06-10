@@ -1,6 +1,6 @@
 import { Script, OpCode, Hash } from '@ts-bitcoin/core';
 
-export class Origin {
+export class Outpoint {
     txid: Buffer = Buffer.alloc(32);
     vout: number = 0;
 
@@ -16,20 +16,20 @@ export class Origin {
     }
 
     static fromOutpoint(txid: Buffer, vout: number) {
-        const origin = new Origin();
+        const origin = new Outpoint();
         origin.txid = txid;
         origin.vout = vout;
         return origin;
     }
     static fromString(str: string) {
-        const origin = new Origin();
+        const origin = new Outpoint();
         origin.txid = Buffer.from(str.slice(0, 64), 'hex');
         origin.vout = parseInt(str.slice(65), 10);
         return origin;
     }
 
     static fromBuffer(buf: Buffer) {
-        const origin = new Origin();
+        const origin = new Outpoint();
         origin.txid = buf.slice(0, 32);
         origin.vout = parseInt(buf.slice(32).toString('hex'), 16);
         return origin;
@@ -41,18 +41,18 @@ export class Origin {
 
     static fromJson(json: string) {
         const value = JSON.parse(json);
-        return Origin.fromString(value);
+        return Outpoint.fromString(value);
     }
 }
 
 export class FSDir {
-    origin?: Origin;
+    origin?: Outpoint;
     name: string = '';
     entries: { [key: string]: string } = {};
 }
 
 export class FSEntry {
-    origin: Origin = new Origin();
+    origin: Outpoint = new Outpoint();
     name: string = '';
     data: Buffer = Buffer.alloc(0);
 }
@@ -74,7 +74,7 @@ export class Inscription {
     txid: string = '';
     vout: number = 0;
     file?: File;
-    origin: Origin = new Origin();
+    origin: Outpoint = new Outpoint();
     height: number = 0;
     idx: number = 0;
     lock: string = '';
