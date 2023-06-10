@@ -1,4 +1,4 @@
-import { Script, OpCode, Hash } from 'bsv';
+import { Script, OpCode, Hash } from '@ts-bitcoin/core';
 
 export class Origin {
     txid: Buffer = Buffer.alloc(32);
