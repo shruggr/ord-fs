@@ -118,7 +118,7 @@ async function inscribeDir(path: string): Promise<FSEntry> {
         } else {
             fse = await inscribeFile(path, dirent.name);
         }
-        fsDir.entries[dirent.name] = `ord://${fse.origin.toString()}`;
+        fsDir.entries[dirent.name] = fse.origin.toString();
     }
 
     const tx = new Tx();

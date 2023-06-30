@@ -13,7 +13,6 @@ npm run build
 ```
 FUNDS_WIF=<Funding Wallet WIF>
 FILES_WIF=<Ordinal Wallet WIF>
-TAAL=<TAAL API Key>
 ```
 
 ### Getting Started
